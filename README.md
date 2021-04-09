@@ -5,13 +5,13 @@
  [<img src="https://cdn.rawgit.com/simple-icons/simple-icons/develop/icons/googleplay.svg" width="18" height="18" /> Google Play](https://play.google.com/store/apps/details?id=com.sbut.sbutapp) 
 
 ### ỨNG DỤNG
-Điều khiển, giám sát các thiết bị đầu vào/ đầu ra từ xa qua Internet.
-Dùng trong nghiên cứu IoT để ra ứng dụng nhanh chóng mà không cần biết quá nhiều về lĩnh vực IoT.
-Làm bộ báo động (cháy, nhiệt,... bất cứ dòng cảm biến nào mà Arduino hỗ trợ).
-Làm SCADA.
+- Điều khiển, giám sát các thiết bị đầu vào/ đầu ra từ xa qua Internet.
+- Dùng trong nghiên cứu IoT để ra ứng dụng nhanh chóng mà không cần biết quá nhiều về lĩnh vực IoT.
+- Làm bộ báo động (cháy, nhiệt,... bất cứ dòng cảm biến nào mà Arduino hỗ trợ).
+- Làm SCADA.
 
 ### CÁCH SỬ DỤNG
-Smart Config
+- Smart Config
 ```cpp
 #include <SBut.h> // khai bao thu vien sbut
 
