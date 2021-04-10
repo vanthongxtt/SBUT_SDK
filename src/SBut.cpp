@@ -94,9 +94,11 @@ void SButSdk::begin(int nodeCounts, int sensorCounts, bool smartconfig, const ch
         {
             delay(2000);
             TOKEN_ID = tokens;
+            httpInsertSButServer(false);
+            settingMode = false;
             mqttClient.setServer(SBUT_DEFAULT_DOMAIN_MQTT, SBUT_DEFAULT_PORT_MQTT);
             mqttClient.setCallback(callback);
-            httpInsertSButServer(false);
+            return;
         }
     }
 }
@@ -229,37 +231,65 @@ void SButSdk::httpInsertSButServer(bool smartconfig)
     String token = EEPROMH.read(EEPROM_SBUT_TOKEN_START, EEPROM_SBUT_TOKEN_END);
     String SBUT_ID = EEPROMH.read(EEPROM_SBUT_ID_START, EEPROM_SBUT_ID_END);
     digitalWrite(LED_BUILTIN, HIGH);
-    if (SBUT_ID.length() > 0)
+    if (smartconfig == false)
     {
-        SBUT_THING_ID = SBUT_ID;
-        TOKEN_ID = token;
-        String httpRequestData = "nodes=" + String(nodesCount) + "&sensors=" + String(sensorsCount) + "&thingId=" + SBUT_ID + "&ipAddress=" + WiFi.localIP().toString();
-        if (httpRequest(String("POST /api/v1/thing/") + TOKEN_ID.c_str() + "/addThing", httpRequestData, response))
+        if (SBUT_ID.length() == 0)
         {
-            if (response.length() != 0)
+            SBUT_THING_ID = randStringSButThing;
+            EEPROMH.write(SBUT_THING_ID, EEPROM_SBUT_ID_START, EEPROM_SBUT_ID_END);
+            EEPROMH.write(TOKEN_ID, EEPROM_SBUT_TOKEN_START, EEPROM_SBUT_TOKEN_END);
+            EEPROMH.commit();
+            String httpRequestData = "nodes=" + String(nodesCount) + "&sensors=" + String(sensorsCount) + "&thingId=" + SBUT_THING_ID + "&ipAddress=" + WiFi.localIP().toString();
+            if (httpRequest(String("POST /api/v1/thing/") + TOKEN_ID.c_str() + "/addThing", httpRequestData, response))
             {
-                digitalWrite(LED_BUILTIN, HIGH);
-                Serial.print("WARNING: ");
-                Serial.println(response);
+                if (response.length() != 0)
+                {
+                    digitalWrite(LED_BUILTIN, HIGH);
+                    Serial.print("WARNING: ");
+                    Serial.println(response);
+                }
             }
+        }
+        else
+        {
+            SBUT_THING_ID = SBUT_ID;
         }
     }
     else
     {
-        EEPROMH.write(randStringSButThing, EEPROM_SBUT_ID_START, EEPROM_SBUT_ID_END);
-        EEPROMH.write(TOKEN_ID, EEPROM_SBUT_TOKEN_START, EEPROM_SBUT_TOKEN_END);
-        EEPROMH.commit();
-        String httpRequestData = "nodes=" + String(nodesCount) + "&sensors=" + String(sensorsCount) + "&thingId=" + SBUT_ID + "&ipAddress=" + WiFi.localIP().toString();
-        if (httpRequest(String("POST /api/v1/thing/") + TOKEN_ID.c_str() + "/addThing", httpRequestData, response))
+        if (SBUT_ID.length() > 0)
         {
-            if (response.length() != 0)
+            SBUT_THING_ID = SBUT_ID;
+            TOKEN_ID = token;
+            String httpRequestData = "nodes=" + String(nodesCount) + "&sensors=" + String(sensorsCount) + "&thingId=" + SBUT_ID + "&ipAddress=" + WiFi.localIP().toString();
+            if (httpRequest(String("POST /api/v1/thing/") + TOKEN_ID.c_str() + "/addThing", httpRequestData, response))
             {
-                digitalWrite(LED_BUILTIN, HIGH);
-                Serial.print("WARNING: ");
-                Serial.println(response);
+                if (response.length() != 0)
+                {
+                    digitalWrite(LED_BUILTIN, HIGH);
+                    Serial.print("WARNING: ");
+                    Serial.println(response);
+                }
+            }
+        }
+        else
+        {
+            EEPROMH.write(randStringSButThing, EEPROM_SBUT_ID_START, EEPROM_SBUT_ID_END);
+            EEPROMH.write(TOKEN_ID, EEPROM_SBUT_TOKEN_START, EEPROM_SBUT_TOKEN_END);
+            EEPROMH.commit();
+            String httpRequestData = "nodes=" + String(nodesCount) + "&sensors=" + String(sensorsCount) + "&thingId=" + SBUT_ID + "&ipAddress=" + WiFi.localIP().toString();
+            if (httpRequest(String("POST /api/v1/thing/") + TOKEN_ID.c_str() + "/addThing", httpRequestData, response))
+            {
+                if (response.length() != 0)
+                {
+                    digitalWrite(LED_BUILTIN, HIGH);
+                    Serial.print("WARNING: ");
+                    Serial.println(response);
+                }
             }
         }
     }
+
     delay(3000L);
 }
 bool SButSdk::httpRequest(const String &method, const String &request, String &response)
@@ -453,6 +483,7 @@ void SButSdk::checkButtonResetClick()
             appMode = SERVER_MODE;
             ECHOLN("[WifiService][SBUT RESET] SBUT RESET....");
             EEPROMH.clear(0, 512);
+            EEPROM.end();
             delay(3000);
             ESP.restart();
         }

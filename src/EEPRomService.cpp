@@ -23,11 +23,11 @@ void EEPRomHClass::write(const String &data, int begin, int endMax)
         return;
     }
     clear(begin, endMax);
-
+    ECHO("[EEPRomService][write] Wrote EEPROM: ");
     for (int i = begin; i < end; i++) {
         EEPROM.write(i, data[i - begin]);
-        ECHO("[EEPRomService][write] Wrote EEPROM: ");
-        ECHOLN(data[i - begin]);
+        // ECHO("[EEPRomService][write] Wrote EEPROM: ");
+        // ECHOLN(data[i - begin]);
     }
 }
 
@@ -55,7 +55,7 @@ void EEPRomHClass::clear(int start, int end)
     ECHO(start);
     ECHO(" ");
     ECHOLN(end);
-    for (int i = start; i <= end; ++i) {
+    for (int i = start; i < end; i++) {
         EEPROM.write(i, 0);
     }
 }
