@@ -4,12 +4,13 @@
 #define SBUT_DEFAULT_DOMAIN_MQTT     "mqtt.sefvi.com"
 
 #define SBUT_DEFAULT_DOMAIN_CLOUD    "cloud.sbut.vn"
+// #define SBUT_DEFAULT_DOMAIN_CLOUD "192.168.1.6"
 
 #define SBUT_DEFAULT_PORT_MQTT       8888
 
 #define SBUT_DEFAULT_PORT_CLOUD    3000
 
-#define SBUT_VERSION        "V1.0.5"
+#define SBUT_VERSION        "V1.0.6"
 
 #define SETTING_HOLD_TIME 10000
 

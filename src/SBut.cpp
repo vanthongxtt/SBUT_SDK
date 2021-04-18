@@ -363,9 +363,35 @@ bool SButSdk::httpRequest(const String &method, const String &request, String &r
     client.stop();
     return true;
 }
+// int SButSdk::getNode(int node)
+// {
+
+//     JSONVar myObject = JSON.parse(messageCB);
+//     if (JSON.typeof(myObject) == "undefined")
+//     {
+//         // Serial.println("Parsing input failed!");
+//         return false;
+//     }
+
+  
+//     String pinMode = String((const char *)myObject[node]["pinMode"]);
+//     // Serial.println((int)myObject[node]["state"]);
+//     String nod = String(node);
+//     // String sub = "esp/node/";
+//     // sub += SBUT_THING_ID;
+//     // sub += "/";
+//     // sub += nod;
+//     if (nod == pinMode)
+//     {
+//         String state = String((const char *)myObject[node]["state"]);
+//         int convertedstring = atoi(state.c_str());
+//         return convertedstring;
+//     }
+//     // return false;
+// }
 int SButSdk::getNode(int node)
 {
-    // Serial.println("setNode: " + topicCB + " " + messageCB);
+
     String nod = String(node);
     String sub = "esp/node/";
     sub += SBUT_THING_ID;
@@ -376,7 +402,7 @@ int SButSdk::getNode(int node)
     {
         return messageCB.toInt();
     }
-    return false;
+    // return false;
 }
 void SButSdk::setNode(int node, int value)
 {
@@ -422,6 +448,12 @@ void SButSdk::reconnect()
                 const char *s = sub.c_str();
                 mqttClient.subscribe(s);
             }
+            // String sub = "esp/node/";
+            // sub += SBUT_THING_ID;
+
+            // Serial.println(sub);
+            // const char *s = sub.c_str();
+            // mqttClient.subscribe(s);
         }
         else
         {

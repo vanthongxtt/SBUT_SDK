@@ -1,6 +1,6 @@
 # SBUT PLATFORM
 - Nền tảng kết nối các thiết bị của bạn với đám mây, thiết kế, phân tích dữ liệu từ xa và quản  các sản phẩm được triển khai của bạn theo yêu cầu.
-- Dowload: 
+- Download: 
  [<img src="https://svgsilh.com/svg/1873373.svg" width="18" height="18" /> Website](https://sbut.vn) | 
  [<img src="https://cdn.rawgit.com/simple-icons/simple-icons/develop/icons/googleplay.svg" width="18" height="18" /> Google Play](https://play.google.com/store/apps/details?id=com.sbut.sbutapp) 
 
