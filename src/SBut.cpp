@@ -1,4 +1,9 @@
 #include "SBut.h"
+#if ESP8266
+ESP8266WebServer webServer(80);
+#elif defined(ESP32)
+WebServer webServer(80);
+#endif
 const char *apSSID = "SBUT_SETUP_";
 const char *apPassword = "12345678";
 const IPAddress apIP(192, 168, 1, 5);
@@ -24,7 +29,7 @@ unsigned long valSync = 0;
 unsigned long settingTimeout = 0;
 int appMode = NORMAL_MODE;
 int tempSync = 0;
-ESP8266WebServer webServer(80);
+
 PubSubClient mqttClient(client);
 void callback(char *topic, byte *payload, unsigned int length)
 {
@@ -363,32 +368,7 @@ bool SButSdk::httpRequest(const String &method, const String &request, String &r
     client.stop();
     return true;
 }
-// int SButSdk::getNode(int node)
-// {
 
-//     JSONVar myObject = JSON.parse(messageCB);
-//     if (JSON.typeof(myObject) == "undefined")
-//     {
-//         // Serial.println("Parsing input failed!");
-//         return false;
-//     }
-
-  
-//     String pinMode = String((const char *)myObject[node]["pinMode"]);
-//     // Serial.println((int)myObject[node]["state"]);
-//     String nod = String(node);
-//     // String sub = "esp/node/";
-//     // sub += SBUT_THING_ID;
-//     // sub += "/";
-//     // sub += nod;
-//     if (nod == pinMode)
-//     {
-//         String state = String((const char *)myObject[node]["state"]);
-//         int convertedstring = atoi(state.c_str());
-//         return convertedstring;
-//     }
-//     // return false;
-// }
 int SButSdk::getNode(int node)
 {
 

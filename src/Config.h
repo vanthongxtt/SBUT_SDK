@@ -10,7 +10,7 @@
 
 #define SBUT_DEFAULT_PORT_CLOUD    3000
 
-#define SBUT_VERSION        "V1.0.6"
+#define SBUT_VERSION        "V1.0.7"
 
 #define SETTING_HOLD_TIME 10000
 

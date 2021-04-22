@@ -2,11 +2,22 @@
 #define SBut_h
 
 #include "Arduino.h"
-#include "ESP8266WiFi.h"
+
+#if ESP8266
+#include <ESP8266WiFi.h>
+#include <ESP8266WebServer.h>
+
+#elif defined(ESP32)
+#include <WiFi.h>
+#include <HTTPClient.h>
+#include <WebServer.h>
+
+#endif
+
 #include <Arduino_JSON.h>
 #include <EEPROM.h>
 #include <DNSServer.h>
-#include <ESP8266WebServer.h>
+// #include <ESP8266WebServer.h>
 #include <WiFiClient.h>
 #include <PubSubClient.h>
 #include "Config.h"
