@@ -1,5 +1,5 @@
 # SBUT PLATFORM
-- Nền tảng kết nối các thiết bị của bạn với đám mây, thiết kế, phân tích dữ liệu từ xa và quản  các sản phẩm được triển khai của bạn theo yêu cầu.
+- SBut Platform là nền tảng IoT giúp kết nối các thiết bị của bạn lên Internet. Bạn có thể kiểm soát thiết bị dễ dàng bằng cách sử dụng Dashboard hoặc thông qua API dành cho nhà phát triển.
 - Download: 
  [<img src="https://svgsilh.com/svg/1873373.svg" width="18" height="18" /> Website](https://sbut.vn) | 
  [<img src="https://cdn.rawgit.com/simple-icons/simple-icons/develop/icons/googleplay.svg" width="18" height="18" /> Google Play](https://play.google.com/store/apps/details?id=com.sbut.sbutapp) 
@@ -13,19 +13,19 @@
 ### CÁCH SỬ DỤNG
 - Smart Config
 ```cpp
-#include <SBut.h> // khai bao thu vien sbut
+#include <SBut.h> // Gọi thư viện sbut
 
-SButSdk nSbut; // dat ten cho thu vien sbut
-int nodes = 0; // khai bao luong node
-int sensors = 0; // khai bao luong cam bien la 0
+SButSDK nSbut; // đặt tên cho thư viện Sbut
 
-int VIRTUAL_PIN;
+const int nodes = 0; // khai báo luồn node
+const int sensors = 0; // khai báo luồn sensor
+
 void setup() {
-  nSbut.begin(nodes, sensors, true); // bat dau goi thu vien
+  nSbut.beginSmartConfig(nodes, sensors); // bắt đầu gọi thư viện smart config
 }
 
 void loop() {
-  nSbut.loop(); // vong lap cho sbut
+  nSbut.loop(); // vòng lập cho sbut
 }
 ```
 - Config Thủ Công
@@ -33,23 +33,25 @@ void loop() {
 ```cpp
 #include <SBut.h>
 
-SButSdk nSbut;
-int nodes = 0; // khai báo  luồng node
-int sensors = 0;
+SButSDK nSbut;
+
+
+const int nodes = 0; // khai báo luồn node
+const int sensors = 0; //khai báo luồn sensor
 
 
 // Thông tin đăng nhập WiFi của bạn.
 // Đặt mật khẩu thành "" cho các mạng mở.
-const char *ssid = "Van Thong"; //dùng cho phần config thủ công
-const char *pass = "123456789"; //dùng cho phần config thủ công
+const char *ssid = "YourNetworkName"; // Tên wifi nhà bạn
+const char *pass = "YourNetworkPassword"; // Mật khẩu wifi nhà bạn
 
 // Bạn sẽ nhận được Auth Token trong Ứng dụng SBut Platform.
 // Vào phần Menu (Auth Token)
-const char *token = "JiHw2L5hTvmEFLB1GdONNAvKbPApbzVxPV7lXvu8hWTvlTiJv5"; //dùng cho phần config thủ công
+const char *token = "YourAuthToken"; // Auth Token
 
 void setup()
 {
-    nSbut.begin(nodes, sensors, false, ssid, pass, token); //dùng cho phần config thủ công
+    nSbut.begin(ssid, pass, token, nodes, sensors); //dùng cho phần config thủ công
 }
 
 void loop()
