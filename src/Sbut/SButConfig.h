@@ -1,9 +1,10 @@
 #ifndef SButConfig_h
 #define SButConfig_h
 
-#define SBUT_DEFAULT_DOMAIN_MQTT     "mqtt.sefvi.com"
+#define SBUT_DEFAULT_DOMAIN_MQTT     "mqtt.sefvi.com" 
 
 #define SBUT_DEFAULT_DOMAIN_CLOUD    "cloud.sbut.vn"
+
 
 #define SBUT_DEFAULT_PORT_MQTT       8888
 

@@ -7,11 +7,15 @@ String tokenUser = "";
 SButHTTPClass::SButHTTPClass()
 {
 }
-void SButHTTPClass::httpCreateThing(const String token, const String thingId, const String Ip)
+void SButHTTPClass::httpCreateThing(const String token, const String thingId, const String Ip, const String board, const String version)
 {
+    uint32_t getSketchSize = ESP.getSketchSize();
+    uint32_t getFreeSketchSpace = ESP.getFreeSketchSpace();
+    String getSketchMD5 = ESP.getSketchMD5();
+
     String response;
     tokenUser = String(token);
-    String httpRequestData = "thingId=" + thingId + "&ipAddress=" + Ip;
+    String httpRequestData = "thingId=" + thingId + "&ipAddress=" + Ip + "&board=" + board + "&version=" + version + "&sketchHash=" + getSketchMD5 + "&sketchSize=" + String(getSketchSize) + "&freeSketchSpace=" + String(getFreeSketchSpace);
     if (httpRequest(String("POST /api/v1/thing/") + token + "/addThing", httpRequestData, response))
     {
         if (response.length() != 0)
@@ -32,6 +36,45 @@ void SButHTTPClass::httpCreateNodeAndSensor(const String thingId, const int node
             Serial.print("WARNING: ");
             Serial.println(response);
         }
+    }
+}
+void SButHTTPClass::updateThingVersion(const String thingId, const String version)
+{
+    String response;
+    String httpRequestData = "version=" + String(version);
+    if (httpRequest(String("POST /api/v1/thing/") + tokenUser + "/" + thingId + "/updateVersion", httpRequestData, response))
+    {
+        if (response.length() != 0)
+        {
+            Serial.print("WARNING: ");
+            Serial.println(response);
+        }
+    }
+}
+void SButHTTPClass::updateOTA(const String serverUrl, const String version)
+{
+
+    int serverUrlSize = serverUrl.length() + 1;
+    char _serverUrl[serverUrlSize];
+    serverUrl.toCharArray(_serverUrl, serverUrlSize);
+
+    int versionSize = version.length() + 1;
+    char _version[versionSize];
+    version.toCharArray(_version, versionSize);
+
+    t_httpUpdate_return ret = ESPhttpUpdate.update(serverUrl, version);
+    Serial.println(String(ret));
+    switch (ret)
+    {
+    case HTTP_UPDATE_FAILED:
+        Serial.printf("SBUT_UPDATE_FAILD Error (%d): %s", ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
+        break;
+    case HTTP_UPDATE_NO_UPDATES:
+        Serial.println("SBUT_UPDATE_NO_UPDATES");
+        break;
+    case HTTP_UPDATE_OK:
+        Serial.println("SBUT_UPDATE_OK");
+        break;
     }
 }
 int SButHTTPClass::getNodeCloud(const String thingId)

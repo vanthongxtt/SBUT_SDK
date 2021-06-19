@@ -19,6 +19,7 @@ unsigned long valNotify = 0;
 int appMode = NORMAL_MODE;
 int tempSync = 0;
 
+String ver = ""; 
 
 SButApiClass::SButApiClass()
 {
@@ -49,6 +50,7 @@ String SButApiClass::thingId()
 
 void SButApiClass::begin(const char *ssid, const char *pass, const char *token, int nodeCounts, int sensorCounts)
 {
+
     if (ssid == NULL || pass == NULL || token == NULL)
     {
         ECHOLN("Can't begin'");
@@ -58,15 +60,19 @@ void SButApiClass::begin(const char *ssid, const char *pass, const char *token, 
     {
         ECHOLN(" NODE AND SENSOR NULL ");
     }
+
     WiFi.begin(ssid, pass);
     String tokenUser = String(token);
     authToken = tokenUser;
     IdThing = thingId();
     if (checkConnection())
     {
-        SButHTTP.httpCreateThing(tokenUser, IdThing, WiFi.localIP().toString());
+        SButHTTP.httpCreateThing(tokenUser, IdThing, WiFi.localIP().toString(), SBUT_INFO_DEVICE, "SDEV_V1");
         SButHTTP.httpCreateNodeAndSensor(IdThing, nodeCounts, sensorCounts);
+
         SButMQTT.beginMQTT(IdThing);
+
+        // String serverUrl = "http://192.168.1.124:3000/api/v1/thing/bRio5mEZrcmQKJH45Knulxy6BCi0o0OUZSxSPM9xm05wGa9ce1/U4d6477vmcgM/updateOTA";
     }
     else
     {
@@ -90,7 +96,7 @@ void SButApiClass::beginSmartConfig(const int nodeCounts, const int sensorCounts
             authToken = token;
             if (token.length() > 0)
             {
-                SButHTTP.httpCreateThing(token, IdThing, WiFi.localIP().toString());
+                SButHTTP.httpCreateThing(token, IdThing, WiFi.localIP().toString(), SBUT_INFO_DEVICE, "SDEV_V1");
                 SButHTTP.httpCreateNodeAndSensor(IdThing, nodeCounts, sensorCounts);
                 SButMQTT.beginMQTT(IdThing);
             }
@@ -192,6 +198,17 @@ void SButApiClass::loop()
         SButMQTT.loopMQTT();
         syncNode();
         checkButtonResetClick();
+
+        String topic = SButMQTT.getTopic();
+        String uri = "esp/";
+        uri += IdThing;
+        uri += "/OTA";
+
+        if (topic == uri.c_str())
+        {
+            String msg = SButMQTT.getMessage();
+            SButHTTP.updateOTA(msg, ver);
+        }
     }
 }
 bool SButApiClass::checkConnection()
@@ -239,6 +256,7 @@ int SButApiClass::getNode(int id)
     uri += IdThing;
     uri += "/";
     uri += id;
+
     if (topic == uri.c_str())
     {
         return msg.toInt();
@@ -268,6 +286,15 @@ bool SButApiClass::isConnected()
         return false;
     }
     return true;
+}
+
+void SButApiClass::setVersion(const String version)
+{
+    if (version.length() > 0)
+    {
+        ver = version;
+        SButHTTP.updateThingVersion(IdThing, version);
+    }
 }
 
 void SButApiClass::syncNode()

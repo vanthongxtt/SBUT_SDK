@@ -19,6 +19,10 @@ void callback(char *topic, byte *payload, unsigned int length)
 
     msgMQTT = (char *)payload;
     topicMQTT = String(topic);
+
+    Serial.println(msgMQTT.c_str());
+    Serial.println(topicMQTT.c_str());
+
 }
 void SButMQTTClass::beginMQTT(String thingId)
 {
@@ -48,21 +52,31 @@ void SButMQTTClass::reconnect()
         if (sButMqttClient.connect(clientId.c_str(), "", ""))
         {
             Serial.println("OK");
+
             int nodes = SButHTTP.getNodeCloud(idThing);
+
             if (nodes > 0)
             {
-                for (int i = 0; i < nodes; i++)
-                {
-                    String node = String(i);
-                    String sub = "esp/node/";
-                    sub += idThing;
-                    sub += "/";
-                    sub += node;
-                    Serial.println(sub);
-                    const char *s = sub.c_str();
-                    sButMqttClient.subscribe(s);
-                }
+                String sub = "esp/node/";
+                sub += idThing;
+                sub += "/#";
+                const char *s = sub.c_str();
+                Serial.println(s);
+                sButMqttClient.subscribe(s);
             }
+
+            String subUpdate = "esp/";
+            subUpdate += idThing;
+            subUpdate += "/OTA"; 
+            const char *subOTA = subUpdate.c_str();
+            sButMqttClient.subscribe(subOTA);
+            // String topicOnline = "esp/thing/";
+            // topicOnline += idThing;
+            // String topicSup = "esp/";
+            // topicSup += idThing;
+            // topicSup += "/online";
+            // sButMqttClient.publish(topicOnline.c_str(), "");
+            // sButMqttClient.subscribe(topicSup.c_str());
         }
         else
         {

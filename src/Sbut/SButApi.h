@@ -9,6 +9,7 @@
 #include <DNSServer.h>
 
 #include "SButConfig.h"
+#include "SButDetectDevice.h"
 #include "SButEEPROM.h"
 
 #include "SButMQTT.h"
@@ -30,6 +31,7 @@ public:
     void setNode(int id, int value);
     bool isConnected();
     void notify(const String &message);
+    void setVersion(const String version);
 
 private:
     bool checkConnection();
