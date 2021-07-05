@@ -21,6 +21,8 @@ int tempSync = 0;
 
 String ver = ""; 
 
+
+
 SButApiClass::SButApiClass()
 {
 }
@@ -71,8 +73,6 @@ void SButApiClass::begin(const char *ssid, const char *pass, const char *token, 
         SButHTTP.httpCreateNodeAndSensor(IdThing, nodeCounts, sensorCounts);
 
         SButMQTT.beginMQTT(IdThing);
-
-        // String serverUrl = "http://192.168.1.124:3000/api/v1/thing/bRio5mEZrcmQKJH45Knulxy6BCi0o0OUZSxSPM9xm05wGa9ce1/U4d6477vmcgM/updateOTA";
     }
     else
     {
@@ -167,8 +167,9 @@ void SButApiClass::startWebServer()
             delay(3000);
             ESP.restart();
         });
+      
         webServer.onNotFound([]() {
-            String s = "<h1>SBUT AP mode</h1><p><a href=\"/settings\">Wi-Fi Settings</a></p>";
+            String s = "<h1>SBUT Not Found";
             webServer.send(200, "text/html", s);
         });
     }
@@ -200,7 +201,7 @@ void SButApiClass::loop()
         checkButtonResetClick();
 
         String topic = SButMQTT.getTopic();
-        String uri = "esp/";
+        String uri = "v1/sdk/esp/";
         uri += IdThing;
         uri += "/OTA";
 
@@ -240,7 +241,7 @@ void SButApiClass::setSensor(int id, int value)
 {
     String sId = String(id);
     String v = String(value);
-    String uri = "esp/sensor/";
+    String uri = "v1/sdk/esp/setSensor/";
     uri += IdThing;
     uri += "/";
     uri += sId;
@@ -252,7 +253,7 @@ int SButApiClass::getNode(int id)
 {
     String topic = SButMQTT.getTopic();
     String msg = SButMQTT.getMessage();
-    String uri = "esp/node/";
+    String uri = "v1/sdk/esp/getNode/";
     uri += IdThing;
     uri += "/";
     uri += id;
@@ -271,7 +272,7 @@ void SButApiClass::setNode(int id, int value)
 {
     String n = String(id);
     String v = String(value);
-    String uri = "esp/node/";
+    String uri = "v1/sdk/esp/setNode/";
     uri += IdThing;
     uri += "/";
     uri += n;
@@ -301,9 +302,9 @@ void SButApiClass::syncNode()
 {
     if (tempSync == 0)
     {
-        if (((unsigned long)(millis() - valSync)) > 1000)
+        if (((unsigned long)(millis() - valSync)) > 2000)
         {
-            String s = "esp/nodeOnl/";
+            String s = "v1/sdk/esp/nodeOnl/";
             s += IdThing;
             s += "/sync";
             SButMQTT.publish(s.c_str(), "ok");
@@ -316,7 +317,7 @@ void SButApiClass::notify(const String &message)
 {
     if (((unsigned long)(millis() - valNotify)) > 1000)
     {
-        String uri = "esp/notify/";
+        String uri = "v1/sdk/esp/notify/";
         uri += authToken;
 
         String mess = IdThing;

@@ -47,7 +47,7 @@ void SButMQTTClass::reconnect()
     while (!sButMqttClient.connected())
     {
         Serial.print("Connect MQTT...");
-        String clientId = "SButClient_";
+        String clientId = "SBUT_LIB_SDK_THING_";
         clientId += idThing;
         if (sButMqttClient.connect(clientId.c_str(), "", ""))
         {
@@ -57,7 +57,7 @@ void SButMQTTClass::reconnect()
 
             if (nodes > 0)
             {
-                String sub = "esp/node/";
+                String sub = "v1/sdk/esp/getNode/";
                 sub += idThing;
                 sub += "/#";
                 const char *s = sub.c_str();
@@ -65,18 +65,11 @@ void SButMQTTClass::reconnect()
                 sButMqttClient.subscribe(s);
             }
 
-            String subUpdate = "esp/";
+            String subUpdate = "v1/sdk/esp/";
             subUpdate += idThing;
             subUpdate += "/OTA"; 
             const char *subOTA = subUpdate.c_str();
             sButMqttClient.subscribe(subOTA);
-            // String topicOnline = "esp/thing/";
-            // topicOnline += idThing;
-            // String topicSup = "esp/";
-            // topicSup += idThing;
-            // topicSup += "/online";
-            // sButMqttClient.publish(topicOnline.c_str(), "");
-            // sButMqttClient.subscribe(topicSup.c_str());
         }
         else
         {
