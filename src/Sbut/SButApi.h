@@ -24,10 +24,12 @@ public:
     ~SButApiClass();
     String thingId();
     void begin(const char *ssid, const char *pass, const char *token, const int nodeCounts = 0, const int sensorCounts = 0);
+    void beginWidgets(const char *ssid, const char *pass, const char *token, const char *thingId);
     void beginSmartConfig(const int nodeCounts = 0, const int sensorCounts = 0);
     void loop();
     void setSensor(int id, int value);
     int getNode(int id);
+    int getSlider(int id);
     void setNode(int id, int value);
     bool isConnected();
     void notify(const String &message);

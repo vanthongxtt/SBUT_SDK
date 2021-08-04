@@ -25,6 +25,23 @@ void SButHTTPClass::httpCreateThing(const String token, const String thingId, co
         }
     }
 }
+void SButHTTPClass::httpUpdateWidgetInforThing(const String token, const String thingId, const String Ip, const String board){
+    uint32_t getSketchSize = ESP.getSketchSize();
+    uint32_t getFreeSketchSpace = ESP.getFreeSketchSpace();
+    String getSketchMD5 = ESP.getSketchMD5();
+
+    String response;
+    tokenUser = String(token);
+    String httpRequestData = "&ipAddress=" + Ip + "&board=" + board +  "&sketchHash=" + getSketchMD5 + "&sketchSize=" + String(getSketchSize) + "&freeSketchSpace=" + String(getFreeSketchSpace);
+    if (httpRequest(String("POST /api/v1/thing/") + token + "/" + thingId + "/updateWidgetThingCloud", httpRequestData, response))
+    {
+        if (response.length() != 0)
+        {
+            Serial.print("WARNING: ");
+            Serial.println(response);
+        }
+    }
+}
 void SButHTTPClass::httpCreateNodeAndSensor(const String thingId, const int nodes, const int sensors)
 {
     String response;

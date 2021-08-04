@@ -26,6 +26,7 @@ public:
     String getMessage();
 
 private:
+    void subCloudConnect(String type);
 };
 extern SButMQTTClass SButMQTT;
 #endif

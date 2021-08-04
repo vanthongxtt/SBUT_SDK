@@ -22,7 +22,6 @@ void callback(char *topic, byte *payload, unsigned int length)
 
     Serial.println(msgMQTT.c_str());
     Serial.println(topicMQTT.c_str());
-
 }
 void SButMQTTClass::beginMQTT(String thingId)
 {
@@ -53,23 +52,14 @@ void SButMQTTClass::reconnect()
         {
             Serial.println("OK");
 
-            int nodes = SButHTTP.getNodeCloud(idThing);
-
-            if (nodes > 0)
-            {
-                String sub = "v1/sdk/esp/getNode/";
-                sub += idThing;
-                sub += "/#";
-                const char *s = sub.c_str();
-                Serial.println(s);
-                sButMqttClient.subscribe(s);
-            }
-
             String subUpdate = "v1/sdk/esp/";
             subUpdate += idThing;
-            subUpdate += "/OTA"; 
+            subUpdate += "/OTA";
             const char *subOTA = subUpdate.c_str();
             sButMqttClient.subscribe(subOTA);
+
+            subCloudConnect("getNode");
+            subCloudConnect("getSlider");
         }
         else
         {
@@ -80,7 +70,17 @@ void SButMQTTClass::reconnect()
         }
     }
 }
-
+void SButMQTTClass::subCloudConnect(String type)
+{
+    String subCloud = "v1/sdk/esp/";
+    subCloud += type.c_str();
+    subCloud += "/";
+    subCloud += idThing;
+    subCloud += "/#";
+    const char *s = subCloud.c_str();
+    Serial.println(s);
+    sButMqttClient.subscribe(s);
+}
 void SButMQTTClass::publish(String uri, String value)
 {
     sButMqttClient.publish(uri.c_str(), value.c_str());

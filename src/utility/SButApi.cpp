@@ -114,6 +114,27 @@ void SButApiClass::beginSmartConfig(const int nodeCounts, const int sensorCounts
     settingMode = true;
     createSmartConfig();
 }
+void SButApiClass::beginWidgets(const char *ssid, const char *pass, const char *token, const char *thingId){
+    if (ssid == NULL || pass == NULL || token == NULL || thingId == NULL)
+    {
+        ECHOLN("Can't begin'");
+        return;
+    }
+    WiFi.begin(ssid, pass);
+    String tokenUser = String(token);
+    authToken = tokenUser;
+    IdThing = thingId;
+    if (checkConnection())
+    {
+        SButHTTP.httpUpdateWidgetInforThing(tokenUser, IdThing, WiFi.localIP().toString(), SBUT_INFO_DEVICE);
+        SButMQTT.beginMQTT(IdThing);
+    }
+    else
+    {
+        ECHOLN("Ket Noi Mang That Bai!");
+        return;
+    }
+}
 bool SButApiClass::restoreSmartConfig()
 {
     String ssid = SButEEPROM.read(EEPROM_WIFI_SSID_START, EEPROM_WIFI_SSID_END);
@@ -254,6 +275,23 @@ int SButApiClass::getNode(int id)
     String topic = SButMQTT.getTopic();
     String msg = SButMQTT.getMessage();
     String uri = "v1/sdk/esp/getNode/";
+    uri += IdThing;
+    uri += "/";
+    uri += id;
+
+    if (topic == uri.c_str())
+    {
+        return msg.toInt();
+    }
+    else
+    {
+        return -1;
+    }
+}
+int SButApiClass::getSlider(int id){
+    String topic = SButMQTT.getTopic();
+    String msg = SButMQTT.getMessage();
+    String uri = "v1/sdk/esp/getSlider/";
     uri += IdThing;
     uri += "/";
     uri += id;
