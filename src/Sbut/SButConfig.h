@@ -5,8 +5,6 @@
 
 #define SBUT_DEFAULT_DOMAIN_CLOUD    "cloud.sbut.vn" // cloud.sbut.vn
 
-
-
 #define SBUT_DEFAULT_PORT_MQTT       1883
 
 

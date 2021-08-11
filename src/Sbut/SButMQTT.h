@@ -6,7 +6,7 @@
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 
-#include <PubSubClient.h>
+#include "lib/PubSubClient/PubSubClient.h"
 
 #include "SButConfig.h"
 #include "SButDebug.h"
